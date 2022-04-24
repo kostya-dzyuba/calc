@@ -49,13 +49,14 @@ public class Calc {
     private static void expandParentheses(ArrayList<Object> tokens) {
         checkParentheses(tokens);
         for (int i = 0; i < tokens.size(); i++) {
-            Object token = tokens.get(i);
-            if (token instanceof Character c && c == '(') {
-                Operator op = (Operator) tokens.get(i + 2);
-                op.priority = 2;
-                tokens.remove(i + 4);
-                tokens.remove(i);
-                i--;
+            if (tokens.get(i) instanceof Character left && left == '(') {
+                int leftIndex = i;
+                for (; !(tokens.get(i + 2) instanceof Character c && c == ')'); i += 2) {
+                    Operator op = (Operator) tokens.get(i + 2);
+                    op.priority = 2;
+                }
+                tokens.remove(i + 2);
+                tokens.remove(leftIndex);
             }
         }
     }
