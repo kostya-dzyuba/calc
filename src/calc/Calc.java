@@ -38,9 +38,10 @@ public class Calc {
                 } else if (c == ')' && i + 1 < tokens.size() && tokens.get(i + 1) instanceof Integer) {
                     tokens.add(i + 1, Operator.create('*'));
                 }
-            } else if (tokens.get(i) instanceof Operator op) {
-                if (op.represent == '√' && i == 0 || op.represent == '√' && !(tokens.get(i - 1) instanceof Integer)) {
-                    tokens.add(i, 1);
+            } else if (tokens.get(i) instanceof Operator op && (i == 0 || !(tokens.get(i - 1) instanceof Integer))) {
+                switch (op.represent) {
+                    case '-' -> tokens.add(i, 0);
+                    case '√' -> tokens.add(i, 1);
                 }
             }
         }
@@ -53,7 +54,7 @@ public class Calc {
                 int leftIndex = i;
                 for (; !(tokens.get(i + 2) instanceof Character c && c == ')'); i += 2) {
                     Operator op = (Operator) tokens.get(i + 2);
-                    op.priority = 2;
+                    op.priority = getMaxPriority(tokens) + 1;
                 }
                 tokens.remove(i + 2);
                 tokens.remove(leftIndex);
