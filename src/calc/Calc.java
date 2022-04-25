@@ -78,19 +78,13 @@ public class Calc {
             int maxPriority = getMaxPriority(tokens);
             for (int i = 0; i < tokens.size(); i++) {
                 Object token = tokens.get(i);
-                if (token instanceof Character c && c == '√') {
-                    int root = (int) Math.sqrt((int) tokens.get(i + 1));
-                    tokens.set(i, root);
+                if (token instanceof Operator operator && operator.priority == maxPriority) {
+                    int a = (int) tokens.get(i - 1);
+                    int b = (int) tokens.get(i + 1);
+                    int result = operator.operation.applyAsInt(a, b);
+                    tokens.set(i, result);
                     tokens.remove(i + 1);
-                } else if (token instanceof Operator operator) {
-                    if (operator.priority == maxPriority) {
-                        int a = (int) tokens.get(i - 1);
-                        int b = (int) tokens.get(i + 1);
-                        int result = operator.operation.applyAsInt(a, b);
-                        tokens.set(i, result);
-                        tokens.remove(i + 1);
-                        tokens.remove(i - 1);
-                    }
+                    tokens.remove(i - 1);
                 }
             }
         }
