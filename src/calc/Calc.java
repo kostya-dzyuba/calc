@@ -7,7 +7,7 @@ public class Calc {
     public static int calc(String expr) {
         ArrayList<Object> tokens = tokenize(expr);
         desugar(tokens);
-        expandParentheses(tokens);
+        applyParens(tokens);
         return calc(tokens);
     }
 
@@ -46,8 +46,8 @@ public class Calc {
         }
     }
 
-    private static void expandParentheses(ArrayList<Object> tokens) {
-        checkParentheses(tokens);
+    private static void applyParens(ArrayList<Object> tokens) {
+        if (!checkParens(tokens)) return;
         for (int i = 0; i < tokens.size(); i++) {
             if (tokens.get(i) instanceof Character left && left == '(') {
                 int leftIndex = i;
@@ -61,16 +61,14 @@ public class Calc {
         }
     }
 
-    private static void checkParentheses(ArrayList<Object> tokens) {
+    private static boolean checkParens(ArrayList<Object> tokens) {
         int parentheses = 0;
         for (Object token : tokens) {
             if (token instanceof Character c)
                 if (c == '(') parentheses++;
                 else if (c == ')') parentheses--;
         }
-        if (parentheses != 0) {
-            throw new IllegalArgumentException("unequal number of parentheses");
-        }
+        return parentheses == 0;
     }
 
     private static int calc(ArrayList<Object> tokens) {
